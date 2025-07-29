@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fake News Detector</title>
+  <!-- Link to the external CSS file located in the static folder -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h2>📰 Fake News Detector</h2>
+    <form method="POST" class="form-box">
+      <label for="news">Enter News Text:</label><br>
+      <textarea name="news" rows="5" placeholder="Paste news text or headline here"></textarea><br>
+      <input type="submit" value="Check">
+    </form>
+
+    {% if verdict %}
+      <div class="result">
+        {% if verdict == 'FAKE' %}
+          <h3 class="fake">
+            🔍 Result: The headline seems to be <em>fabricated or misleading</em>.<br>
+            🧠 Model Verdict: This news is classified as <em>FAKE</em> based on analysis.
+          </h3>
+          <p><strong>📚 Summary:</strong> Summary not available for this news.</p>
+        {% else %}
+          <h3 class="real">
+            🔍 Result: The headline appears to be <em>genuine and reliable</em>.<br>
+            🧠 Model Verdict: This news is classified as <em>REAL</em> based on analysis.
+          </h3>
+          {% if summary %}
+            <h4>📚 Summary:</h4>
+            <p>{{ summary }}</p>
+          {% else %}
+            <p><strong>📚 Summary:</strong> This is a placeholder for a real summary.</p>
+          {% endif %}
+
+          {% if sources %}
+            <h4>🔍 Online verification (Top 5 sources):</h4>
+            <ul>
+              {% for art in sources %}
+                <li>
+                  <a href="{{ art.url }}" target="_blank">{{ art.title }}</a> — <em>{{ art.source.name }}</em>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>No matching reports found online.</p>
+          {% endif %}
+        {% endif %}
+        {% if confidence %}
+         
+          <p class="confidence">Confidence: {{ confidence | round(2) }}%</p>
+
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
